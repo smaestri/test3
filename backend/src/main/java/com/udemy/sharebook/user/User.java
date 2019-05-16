@@ -19,6 +19,9 @@ public class User {
     @Size(min = 5, max = 25, message = "Le prenom doit faire entre 5 et 25 carcatères")
     private String firstName;
 
+    @Size(min = 5, max = 25, message = "Le mot de passe doit faire entre 5 et 25 carcatères")
+    private String password;
+
     public String getEmail() {
         return email;
     }
@@ -53,5 +56,14 @@ public class User {
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 }

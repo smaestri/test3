@@ -12,7 +12,7 @@ export class Bookservice {
   constructor(private http : HttpClient) { }
 
   getMyBooks() {
-    return this.http.get("/users/1/books");
+    return this.http.get("/users/" +  sessionStorage.getItem('userId') + "/books");
   }
 
   deleteBook(idBook: number): any {
@@ -20,11 +20,11 @@ export class Bookservice {
   }
 
   saveBook(book: any): any {
-    return this.http.post("/users/1/books", book);
+    return this.http.post("/users/" +  sessionStorage.getItem('userId') +"/books", book);
   }
 
   getBooksAvailable(): any {
-    return this.http.get("/users/1/books/status/FREE");
+    return this.http.get("/users/" + sessionStorage.getItem('userId') +"/books/status/FREE");
   }
 
 }

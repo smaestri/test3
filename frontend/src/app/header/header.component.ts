@@ -16,7 +16,7 @@ export class HeaderComponent implements OnInit {
 
   logout() {
     this.loginService.logout().subscribe(() => {
-      this.router.navigate(['/login']);
+      this.router.navigate(['']);
     }, () => {
       alert('ko')
     }

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { BookModel } from '../shared/bookmodel';
 import { Bookservice } from '../shared/bookservice.service';
-import { LoanService } from '../loan.service';
+import { LoanService } from '../shared/loan.service';
 import { Router } from '@angular/router';
 
 @Component({
@@ -24,12 +24,11 @@ export class ListbooksComponent implements OnInit {
     }, () => {
       alert('error detected')
     });
-
   }
 
   loanBook(idBook: number) {
     this.loanService.loanBook(idBook).subscribe(() => {
-      this.router.navigate(['/my-loans']);
+      this.router.navigate(['/home/my-loans']);
     })
   }
 

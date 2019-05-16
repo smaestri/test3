@@ -1,0 +1,29 @@
+<div class="add-user-container">
+  <div>
+    <h1>M'inscrire</h1>
+    <div>
+      <form (ngSubmit)="save()">
+        <div>
+          <label>email</label>
+          <input name="email" type="text" [(ngModel)]="user.email" class="form-control">
+        </div>
+        <div>
+          <label>nom</label>
+          <input name="lastName" type="text" [(ngModel)]="user.lastName" class="form-control">
+        </div>
+        <div>
+          <label>prenom</label>
+          <input name="firstName" type="text" [(ngModel)]="user.firstName" class="form-control">
+        </div>
+        <div>
+          <label>password</label>
+          <input name="password" type="password" [(ngModel)]="user.password" class="form-control">
+        </div>
+        <div class="container-valid text-center">
+          <input type="submit" value="Valider" class="btn btn-primary">
+        </div>
+      </form>
+    </div>
+    <div><a routerLink="" routerLinkActive="active">Retour</a></div>
+  </div>
+</div>

@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { Bookservice } from '../shared/bookservice.service';
 import { BookModel } from '../shared/bookmodel';
 import { Router } from '@angular/router';
+import { MatDialog } from '@angular/material';
+import { ModalComponent } from '../modal/modal.component';
 
 @Component({
   selector: 'app-addbook',
@@ -10,12 +12,12 @@ import { Router } from '@angular/router';
 })
 export class AddbookComponent implements OnInit {
   
-  private book: BookModel = {
+  book: BookModel = {
     name: '',
     category: ''
   };
 
-  constructor(private bookService : Bookservice, private router: Router) { }
+  constructor(private bookService : Bookservice, private router: Router, public modal: MatDialog) { }
 
   ngOnInit() {
   }
@@ -23,10 +25,15 @@ export class AddbookComponent implements OnInit {
 
   save() {
     this.bookService.saveBook(this.book).subscribe(() => {
-      this.router.navigate(['']);
+      this.router.navigate(['/home/my-books']);
     }, (response) => {
       if (response && response.error) {
-        alert('erreur detectee')
+        this.modal.open(ModalComponent, {
+          data: {
+            errors: response.error.errors,
+            title: "Erreurs"
+          }
+        });
       }
     })
   }

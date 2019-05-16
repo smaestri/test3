@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { LoanService } from '../loan.service';
+import { LoanService } from '../shared/loan.service';
 import { LoanModel } from '../shared/loanmodel';
 
 @Component({
