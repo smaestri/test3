@@ -1,0 +1,12 @@
+<div class="book-container">
+  <div class="book">
+    <div><img src="/assets/book.png"></div>
+    <div>Titre : {{book.name}}</div>
+    <div>Catégorie : {{book.category}}</div>
+
+    <div *ngIf="!editMode">Prêteur : {{book.user.firstName}} {{book.user.lastName}}</div>
+    <div *ngIf="editMode">
+      <button (click)="deleteBook(book.id)" class="btn btn-primary">Supprimer</button>
+    </div>
+  </div>
+</div>

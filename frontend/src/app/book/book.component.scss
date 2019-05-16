@@ -1,0 +1,11 @@
+.book-container {
+    display: flex;
+    flex-direction: row;
+    padding: 10px;
+
+    .book {
+        width: 250px;
+        display: flex;
+        flex-direction: column;
+    }
+}
