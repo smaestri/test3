@@ -1,5 +1,5 @@
 # sharebook
-Développement WEB Fullstack avec Spring et Angular
+Développement WEB Fullstack avec Spring et Angular.
 Ceci est le code source de l'application du site de formation en ligne udemy.
 
 # Lancement du frontend
