@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Bookservice } from '../shared/bookservice.service';
 import { BookModel } from '../shared/bookmodel';
 import { Router } from '@angular/router';
-import { MatDialog } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
 import { ModalComponent } from '../modal/modal.component';
 
 @Component({
