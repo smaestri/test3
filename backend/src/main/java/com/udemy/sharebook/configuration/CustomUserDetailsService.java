@@ -38,7 +38,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 
         public UserPrincipal(User user) {
             this.user = user;
-            this.user.setPassword("{noop}" + user.getPassword());
+            this.user.setPassword(user.getPassword());
         }
 
         public User getUser() {
