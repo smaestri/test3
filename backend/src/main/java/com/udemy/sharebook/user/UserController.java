@@ -1,6 +1,7 @@
 package com.udemy.sharebook.user;
 
 import com.udemy.sharebook.configuration.CustomUserDetailsService;
+import com.udemy.sharebook.jwt.JwtUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +18,9 @@ public class UserController {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private JwtUtils jwtTokenUtil;
 
     // get user
     @GetMapping(value="/users/{userId}")
@@ -35,9 +39,13 @@ public class UserController {
             return new ResponseEntity(HttpStatus.CONFLICT);
         }
         user.setPassword(new BCryptPasswordEncoder().encode(user.getPassword()));
+
+        // generate valid token for this new user
+        String token = jwtTokenUtil.generateToken(new CustomUserDetailsService.UserPrincipal(user));
+        user.setToken(token);
         userRepository.save(user);
 
-        return new ResponseEntity(HttpStatus.CREATED);
+        return new ResponseEntity(user, HttpStatus.CREATED);
     }
 
     //delete user
@@ -47,14 +55,14 @@ public class UserController {
         userRepository.delete(user.get());
     }
 
-    @GetMapping("/isAuthenticated")
-    public Integer isAuthenticated() {
-        User userSpring = getPrincipal();
-        if (userSpring != null) {
-            return userSpring.getId();
-        }
-        return 0;
-    }
+//    @GetMapping("/isAuthenticated")
+//    public Integer isAuthenticated() {
+//        User userSpring = getPrincipal();
+//        if (userSpring != null) {
+//            return userSpring.getId();
+//        }
+//        return 0;
+//    }
 
     private static User getPrincipal() {
 

@@ -1,9 +1,6 @@
 package com.udemy.sharebook.user;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import javax.validation.constraints.Size;
 
 @Entity
@@ -19,7 +16,15 @@ public class User {
     @Size(min = 2, max = 25, message = "Le prenom doit faire entre 5 et 25 carcatères")
     private String firstName;
 
-//    @Size(min = 2, max = 25, message = "Le mot de passe doit faire entre 5 et 25 carcatères")
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
+    }
+
+    //    @Size(min = 2, max = 25, message = "Le mot de passe doit faire entre 5 et 25 carcatères")
     private String password;
 
     public String getEmail() {
@@ -33,6 +38,8 @@ public class User {
     @Size(min = 2, max = 25, message = "L'email de l'utilisateur doit faire entre 5 et 50 carcatères")
     private String email;
 
+    @Transient
+    private String token;
 
     public String getLastName() {
         return lastName;
