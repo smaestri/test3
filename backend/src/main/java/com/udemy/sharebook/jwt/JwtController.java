@@ -13,6 +13,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
+
 @RestController
 @CrossOrigin
 public class JwtController {
@@ -27,7 +30,7 @@ public class JwtController {
     private CustomUserDetailsService userDetailsService;
 
     @RequestMapping(value = "/authenticate", method = RequestMethod.POST)
-    public ResponseEntity<?> createAuthenticationToken(@RequestBody JwtRequest authenticationRequest) throws Exception {
+    public ResponseEntity<?> createAuthenticationToken(@RequestBody JwtRequest authenticationRequest, HttpServletResponse response) throws Exception {
 
         authenticate(authenticationRequest.getEmail(), authenticationRequest.getPassword());
 
@@ -36,7 +39,11 @@ public class JwtController {
 
         final String token = jwtTokenUtil.generateToken(userDetails);
 
-        return ResponseEntity.ok(new JwtResponse(token, userDetails.getUser().getId()));
+        Cookie cookie = new Cookie("token", token);
+
+        response.addCookie(cookie);
+
+        return ResponseEntity.ok(new JwtResponse(/*token,*/ userDetails.getUser().getId()));
     }
 
     private void authenticate(String username, String password) throws Exception {

@@ -9,38 +9,39 @@ import Header from './components/header/Header'
 import AddUser from './components/add-user/AddUser'
 import Home from './components/home/Home'
 import UserContext from './context/UserContext'
+import Container from 'react-bootstrap/Container'
 import {
     BrowserRouter as Router,
     Route,
     Redirect,
-    useHistory
 } from 'react-router-dom'
+
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 export default function App() {
 
     function PrivateRoute({ children, ...rest }) {
+
         return (
-            <Route {...rest} render={({ location }) => {
-                console.log('toto')
+            <Route {...rest} exact render={(routeProps) => {
+                const elt = React.cloneElement(children, { params: routeProps.match.params, history: routeProps.history })
                 return userInfo
-                    ? children
+                    ? elt
                     : <Redirect to={{
                         pathname: '/login',
-                        state: { from: location }
+                        state: { from: routeProps.location }
                     }} />
             }} />
         )
     }
 
-    function AuthButton({ isConnected, signout }) {
-        const history = useHistory()
 
-        return isConnected === true
-            ? <p>
-                Welcome! <button onClick={signout}>Sign out</button>
-            </p>
-            : <p>You are not logged in.</p>
-    }
+    React.useEffect(() => {
+        axios.get('/refreshConnection').then(response => {
+            setUserInfo({/*token: response.data.token,*/ userId: response.data.id})
+        })
+    }, []);
+
     const [userInfo, setUserInfo] = React.useState('');
 
     const authenticate = (email, password) => {
@@ -48,9 +49,9 @@ export default function App() {
             email: email,
             password: password
         }).then(response => {
-            console.log(response)
-            if (response && response.data && response.data.token) {
+            if (response && response.data) {
                 setUserInfo(response.data)
+                
             }
         })
     }
@@ -60,29 +61,24 @@ export default function App() {
         })
     }
 
-    const updateUserInfo = ({token, userId}) => {
-        console.log('update user')
-        console.log(token + " " + userId)
-        setUserInfo({token, userId})
+    const updateUserInfo = ({userId}) => {
+        setUserInfo({userId})
     }
 
-
-    console.log('values t transmit to children : ' + JSON.stringify(userInfo))
-
-    const isConnected = (userInfo && userInfo.token && userInfo.userId?true:false);
-
-    console.log("is onected" + isConnected)
+    const isConnected = (userInfo /*&& userInfo.token*/ && userInfo.userId?true:false);
 
     return <Router>
-        {isConnected && <Header />}
-        <div>
+          <Container>
+        {isConnected && <Header signout={signout} />}
+      
             <UserContext.Provider value={{userInfo, updateUserInfo}} >
-                <AuthButton isConnected={isConnected} signout={signout} />
-
                 <PrivateRoute path="/listBooks">
                     <ListBooks />
                 </PrivateRoute>
                 <PrivateRoute path="/addBook">
+                    <AddBook/>
+                </PrivateRoute>
+                <PrivateRoute path="/addBook/:bookId">
                     <AddBook />
                 </PrivateRoute>
                 <PrivateRoute path="/myBooks">
@@ -100,6 +96,6 @@ export default function App() {
             
                 <Home isConnected={isConnected} />
             </UserContext.Provider>
-        </div>
+            </Container>
     </Router>
 }

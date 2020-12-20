@@ -41,7 +41,27 @@ public class BookController {
 
         List<Book> listBook = bookRepository.findByUserIdAndDeletedFalse(Integer.valueOf(userId));
         return listBook;
+    }
 
+    // get book
+    @GetMapping(value="/books/{bookId}")
+    public Book getUser(@PathVariable("bookId") String bookId) {
+        Optional<Book> book = bookRepository.findById(Integer.parseInt(bookId));
+        return book.get();
+
+    }
+    // update book
+    @PutMapping(value="/books/{bookId}")
+    public Book updateBook(@PathVariable("bookId") String bookId, @Valid @RequestBody Book book) {
+        Optional<Book> bookToUpdate = bookRepository.findById(Integer.parseInt(bookId));
+        if(bookToUpdate.isPresent()) {
+            Book bookToSave = bookToUpdate.get();
+            bookToSave.setCategory(book.getCategory());
+            bookToSave.setName(book.getName());
+            return bookRepository.save(bookToSave);
+        }
+
+        return null;
 
     }
 

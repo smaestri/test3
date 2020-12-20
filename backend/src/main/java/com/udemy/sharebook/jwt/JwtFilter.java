@@ -5,6 +5,7 @@ import java.io.IOException;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -31,15 +32,30 @@ public class JwtFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
             throws ServletException, IOException {
+        String jwtToken = null;
+        //final String requestTokenHeader = request.getHeader("Authorization");
 
-        final String requestTokenHeader = request.getHeader("Authorization");
+        String requestURI = request.getRequestURI();
+        Cookie[] cookies = request.getCookies();
+        // do not retreive token if new user
+        if(requestURI.equals("/users") || cookies == null || cookies.length == 0) {
+            chain.doFilter(request, response);
+            return;
+        }
+
+
+        for(Cookie cookie : cookies) {
+            if (cookie.getName().equals("token")){
+                jwtToken= cookie.getValue();
+            }
+        }
 
         String username = null;
-        String jwtToken = null;
+
         // JWT Token is in the form "Bearer token". Remove Bearer word and get
         // only the Token
-        if (requestTokenHeader != null && requestTokenHeader.startsWith("Bearer ")) {
-            jwtToken = requestTokenHeader.substring(7);
+        //if (requestTokenHeader != null && requestTokenHeader.startsWith("Bearer ")) {
+          //  jwtToken = requestTokenHeader.substring(7);
             try {
                 username = jwtTokenUtil.getUsernameFromToken(jwtToken);
             } catch (IllegalArgumentException e) {
@@ -47,9 +63,9 @@ public class JwtFilter extends OncePerRequestFilter {
             } catch (ExpiredJwtException e) {
                 System.out.println("JWT Token has expired");
             }
-        } else {
-            logger.warn("JWT Token does not begin with Bearer String");
-        }
+//        } else {
+//            logger.warn("JWT Token does not begin with Bearer String");
+//        }
 
         // Once we get the token validate it.
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {

@@ -9,6 +9,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
@@ -27,12 +29,20 @@ public class UserController {
     public User getUser(@PathVariable("userId") String userId) {
         Optional<User> user = userRepository.findById(Integer.valueOf(userId));
         return user.get();
+    }
+
+    // get user
+    @GetMapping(value="/refreshConnection")
+    public User refresh() {
+        // if we reached here, JWT filter hase been execute
+        CustomUserDetailsService.UserPrincipal principal = (CustomUserDetailsService.UserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return principal.getUser();
 
     }
 
     // creer user
     @PostMapping(value="/users")
-    public ResponseEntity getUser(@Valid @RequestBody User user) {
+    public ResponseEntity saveUser(@Valid @RequestBody User user, HttpServletResponse response) {
 
         List<User> listUser = this.userRepository.findByEmail(user.getEmail());
         if(listUser != null && listUser.size() > 0) {
@@ -44,6 +54,11 @@ public class UserController {
         String token = jwtTokenUtil.generateToken(new CustomUserDetailsService.UserPrincipal(user));
         user.setToken(token);
         userRepository.save(user);
+
+        // il faut aussi mettre a jout le token dansle cookie!
+        Cookie cookie = new Cookie("token", token);
+
+        response.addCookie(cookie);
 
         return new ResponseEntity(user, HttpStatus.CREATED);
     }
