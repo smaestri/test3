@@ -42,18 +42,24 @@ export default class ListBooks extends React.Component {
 
   render() {
     return (
-      <div className="list-book-container">
+      <div>
         <h1>Livres disponibles</h1>
         {this.state.listBooks.length === 0 ? <span>Pas de livres disponibles en cours</span> : ""}
-        <div className="books">
-            {this.state.listBooks.map(book => {
-              return (
-                <div>
-                  <Book name={book.name} category={book.category}></Book>
-                  <button className="btn btn-primary" onClick={() => this.doLoan(book.id)}>Emprunter</button>
+        <div className="list-container">
+          {this.state.listBooks.map(book => {
+            return (
+              <div className="list-book-container">
+                <Book
+                  name={book.name}
+                  category={book.category.label}
+                  lender={book.user.firstName + " " + book.user.lastName}>
+                </Book>
+                <div className="text-center">
+                  <button className="btn btn-primary btn-sm" onClick={() => this.doLoan(book.id)}>Emprunter</button>
                 </div>
-              )
-            })}
+              </div>
+            )
+          })}
         </div>
       </div>
     );

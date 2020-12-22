@@ -3,6 +3,7 @@ import axios from 'axios'
 import {Link} from 'react-router-dom'
 import UserContext from '../../context/UserContext'
 import Book from '../book/Book';
+import './MyBorrows.scss'
 
 function MyBorrows(props) {
 
@@ -36,24 +37,28 @@ function MyBorrows(props) {
   }
   
   return (
-    <div className="loans-container">
+    <div className="container">
     <h1>Mes emprunts</h1>
-    <span>Vous n'avez pas d'emprunt en cours,</span>
-    <Link className="nav-link"  to="/listBooks">Livres disponibles</Link>
-    <div className="loans">
-      <div >
+    <div className="list-container">
         {myBorrows.map(borrow => {
           return (
-          <>
-          <Book name={borrow.book.name} category={borrow.category}></Book>
-          <div>Prété par {borrow.lender.firstName + " " + borrow.lender.lastName} le : {borrow.askDate}</div>
-          {borrow.closeDate?<div>Clos le : {borrow.closeDate}</div>:<button className="btn btn-primary" onClick={()=>closeLoan(borrow.id)}>Clore</button>}
-          </>
+          <div className="borrow-container">
+            <Book 
+              name={borrow.book.name}
+              category={borrow.book.category.label}
+              lender={borrow.lender.firstName +" " + borrow.lender.lastName}
+              loanDate={borrow.askDate}
+              closeDate={borrow.closeDate}>
+            </Book>
+            <div className="text-center">
+              {borrow.closeDate?"":<button className="btn btn-primary btn-sm" onClick={() => closeLoan(borrow.id)}>Clore</button>}
+            </div>
+          </div>
           )
         })}
-      </div>
+        </div>
+        {myBorrows.length === 0?<div>Vous n'avez pas d'emprunt</div>:null}
     </div>
-  </div>
   );
 }
 

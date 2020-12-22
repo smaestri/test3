@@ -4,6 +4,7 @@ import {
   Link,
 } from 'react-router-dom'
 import UserContext from '../../context/UserContext'
+import './AddUser.scss'
 
 function AddUser() {
 
@@ -21,7 +22,7 @@ function AddUser() {
     axios.post('/users', {
       ...userData
     }).then(response => {
-      updateUserInfo({ /*token: response.data.token,*/ userId: response.data.id })
+      updateUserInfo({ /*token: response.data.token,*/ userId: response.data.id, userName: response.data.firstName + " " + response.data.lastName })
     })
   }
 

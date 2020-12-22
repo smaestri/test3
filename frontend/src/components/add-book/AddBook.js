@@ -1,35 +1,41 @@
 import React, { useContext } from 'react'
 import axios from 'axios'
-//import {history} from 'react-router-dom'
-import { useHistory, Redirect } from "react-router-dom";
+import { useHistory, Link } from "react-router-dom";
 
 import UserContext from '../../context/UserContext'
+
+import './AddBook.scss'
 
 function AddBook(props) {
     const history = useHistory();
     const { userInfo } = useContext(UserContext);
     const [bookData, setBookData] = React.useState({})
-    console.log(" bookData " + JSON.stringify(bookData))
+    const [categories, setCategories] = React.useState({})
 
     const fetchBook = (idBook) => {
-        console.log('fetch book')
         axios.get(`/books/${idBook}`/*, config*/).then(response => {
             if (response && response.data) {
-                console.log('get book result=' + response.data)
-                setBookData({ name: response.data.name, category: response.data.category })
+                setBookData({ name: response.data.name, categoryId: response.data.category.id })
+            }
+        })
+    }
+
+    const fetchCategories = () => {
+        axios.get('/categories/').then(response => {
+            if (response && response.data) {
+                setCategories(response.data)
+            }
+        }).then(()=> {
+            if (props.params && props.params.bookId) {
+                // edit book
+                fetchBook(props.params.bookId);
             }
         })
     }
 
     React.useEffect(() => {
-        console.log('useeffect addbook')
-        if (props.params && props.params.bookId) {
-            // edit book
-            fetchBook(props.params.bookId);
-        }
+        fetchCategories();
     }, []);
-
-
 
     const handleInputChange = (e) => {
         let obj = { ...bookData }
@@ -69,14 +75,18 @@ function AddBook(props) {
                 </div>
                 <div>
                     <label>catégorie du livre</label>
-                    <input name="category" type="text" className="form-control" value={bookData.category} onChange={handleInputChange} />
+                    {categories.length > 0  ? (<select name="categoryId" className="form-control" value={bookData.categoryId} onChange={handleInputChange}>
+                        {categories.map(category => (
+                            <option value={category.id}>{category.label}</option>
+                        ))}
+                    </select>):null}
                 </div>
 
                 <div className="container-submit">
                     <input type="submit" value="Valider" className="btn btn-primary" />
                 </div>
             </form>
-            <div><a routerLink="/home/my-books">Retour</a></div>
+            <div><Link to="/myBooks">Retour</Link></div>
         </div>
     )
 }

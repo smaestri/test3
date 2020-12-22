@@ -3,8 +3,6 @@ import Modal from 'react-bootstrap/Modal'
 
 export default function DeleteBookModal({showModal, handleCloseModal, bookToDelete, deleteBook}) {
   return (
-    <>
-    <div className="modal" tabindex="-1" role="dialog"></div>
      <Modal show={showModal} onHide={handleCloseModal}>
         <Modal.Header closeButton>
           <Modal.Title>Supprimer ce livre?</Modal.Title>
@@ -19,6 +17,5 @@ export default function DeleteBookModal({showModal, handleCloseModal, bookToDele
           </Button>
         </Modal.Footer>
       </Modal>
-  </>
   );
 }

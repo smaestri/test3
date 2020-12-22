@@ -1,9 +1,8 @@
-import { propTypes } from 'react-bootstrap/esm/Image'
 import {
 Link
 } from 'react-router-dom'
 
-function Header({signout}) {
+function Header({signout, userName}) {
   return (
     <nav className="navbar navbar-expand-lg navbar-light bg-light">
     <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
@@ -24,7 +23,7 @@ function Header({signout}) {
         </li>
       </ul>
       <ul className="navbar-nav">
-        <li className="nav-item"><Link className="nav-link">Bienvenue, toto</Link></li>
+        <li className="nav-item"><Link className="nav-link">Bienvenue, {userName}</Link></li>
         <li className="nav-item"><Link onClick={signout} className="nav-link">Se déconnecter</Link></li></ul>
     </div>
   </nav>

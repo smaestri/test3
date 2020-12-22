@@ -8,10 +8,12 @@ public class JwtResponse implements Serializable {
 //    private final String jwttoken;
 
     private final int userId;
+    private final String userName;
 
-    public JwtResponse(/*String jwttoken,*/ int userId) {
+    public JwtResponse(/*String jwttoken,*/ int userId, String userName){
 //        this.jwttoken = jwttoken;
         this.userId=userId;
+        this.userName=userName;
     }
 
 //    public String getToken() {
@@ -20,6 +22,10 @@ public class JwtResponse implements Serializable {
 
     public int getUserId() {
         return userId;
+    }
+
+    public String getUserName() {
+        return userName;
     }
 }
 

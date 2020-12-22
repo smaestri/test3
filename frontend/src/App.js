@@ -1,4 +1,4 @@
-import * as React from "react"
+import  React, {useState} from "react"
 import axios from 'axios'
 import ListBooks from './components/list-books/ListBooks'
 import Login from './components/login/Login'
@@ -9,7 +9,7 @@ import Header from './components/header/Header'
 import AddUser from './components/add-user/AddUser'
 import Home from './components/home/Home'
 import UserContext from './context/UserContext'
-import Container from 'react-bootstrap/Container'
+import SimpleModal from './components/modal/SimpleModal'
 import {
     BrowserRouter as Router,
     Route,
@@ -19,6 +19,9 @@ import {
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 export default function App() {
+
+    const [showModal, setShowModal] = useState(false);
+    const handleCloseModal = () => setShowModal(false);
 
     function PrivateRoute({ children, ...rest }) {
 
@@ -38,7 +41,8 @@ export default function App() {
 
     React.useEffect(() => {
         axios.get('/refreshConnection').then(response => {
-            setUserInfo({/*token: response.data.token,*/ userId: response.data.id})
+            setUserInfo({/*token: response.data.token,*/ userId: response.data.id, 
+                userName: response.data.firstName +" " + response.data.lastName})
         })
     }, []);
 
@@ -50,9 +54,12 @@ export default function App() {
             password: password
         }).then(response => {
             if (response && response.data) {
-                setUserInfo(response.data)
+                console.log(JSON.stringify(response.data))
+                setUserInfo({userId: response.data.userId, userName: response.data.userName} )
                 
             }
+        }).catch(error => {
+            setShowModal(true);
         })
     }
     const signout = () => {
@@ -61,15 +68,19 @@ export default function App() {
         })
     }
 
-    const updateUserInfo = ({userId}) => {
-        setUserInfo({userId})
+    const updateUserInfo = ({userId, userName}) => {
+        setUserInfo({userId, userName})
     }
+
+
+    console.log('userInfo')
+    console.log(JSON.stringify(userInfo))
 
     const isConnected = (userInfo /*&& userInfo.token*/ && userInfo.userId?true:false);
 
     return <Router>
-          <Container>
-        {isConnected && <Header signout={signout} />}
+          <div className="container">
+        {isConnected && <Header signout={signout} userName={userInfo.userName} />}
       
             <UserContext.Provider value={{userInfo, updateUserInfo}} >
                 <PrivateRoute path="/listBooks">
@@ -95,7 +106,13 @@ export default function App() {
                 </Route>
             
                 <Home isConnected={isConnected} />
+                <SimpleModal
+                    showModal={showModal}
+                    handleCloseModal={handleCloseModal}
+                    title="Echec du login"
+                    bodyTxt={`Email ou mot de passe incorrect`}
+                    />
             </UserContext.Provider>
-            </Container>
+            </div>
     </Router>
 }

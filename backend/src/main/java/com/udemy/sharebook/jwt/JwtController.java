@@ -43,7 +43,9 @@ public class JwtController {
 
         response.addCookie(cookie);
 
-        return ResponseEntity.ok(new JwtResponse(/*token,*/ userDetails.getUser().getId()));
+        return ResponseEntity.ok(new JwtResponse(/*token,*/
+                userDetails.getUser().getId(),
+                userDetails.getUser().getFirstName() + " " + userDetails.getUser().getLastName() ));
     }
 
     private void authenticate(String username, String password) throws Exception {

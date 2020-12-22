@@ -17,7 +17,6 @@ function Login({ authenticate }) {
 
   const onSubmit = (event) => {
     event.preventDefault();
-    console.log(userData)
     authenticate(userData.email, userData.password);
 
   }

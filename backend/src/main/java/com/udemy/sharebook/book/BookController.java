@@ -20,6 +20,9 @@ public class BookController {
     BookRepository bookRepository;
 
     @Autowired
+    CategoryRepository categoryRepository;
+
+    @Autowired
     UserRepository userRepository;
 
     @Autowired
@@ -50,11 +53,26 @@ public class BookController {
         return book.get();
 
     }
+
+    // get categories
+    @GetMapping(value="/categories")
+    public Iterable<Category> getCategories() {
+        return categoryRepository.findAll();
+
+    }
     // update book
     @PutMapping(value="/books/{bookId}")
     public Book updateBook(@PathVariable("bookId") String bookId, @Valid @RequestBody Book book) {
         Optional<Book> bookToUpdate = bookRepository.findById(Integer.parseInt(bookId));
+
+        Optional<Category> cat = this.categoryRepository.findById(book.getCategoryId());
+
+
+
         if(bookToUpdate.isPresent()) {
+            if(cat.isPresent()) {
+                book.setCategory(cat.get());
+            }
             Book bookToSave = bookToUpdate.get();
             bookToSave.setCategory(book.getCategory());
             bookToSave.setName(book.getName());
@@ -69,7 +87,13 @@ public class BookController {
     @PostMapping(value = "/users/{userId}/books")
     @ResponseStatus(value = HttpStatus.CREATED)
     public Book createBookFoorUser(@PathVariable("userId") String userId, @Valid @RequestBody Book book) {
+
         Optional<User> user = userRepository.findById(Integer.valueOf(userId));
+        Optional<Category> cat = this.categoryRepository.findById(book.getCategoryId());
+
+        if(cat.isPresent()) {
+            book.setCategory(cat.get());
+        }
         book.setDeleted(false);
         book.setStatus("FREE");
         book.setUser(user.get());
@@ -82,12 +106,15 @@ public class BookController {
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public ResponseEntity deleteBook(@PathVariable("bookId") String bookId) {
 
+
+
         Book book = this.bookRepository.findById(Integer.valueOf(bookId)).get();
         List<Loan> loans = this.loanRepository.findByBookId(Integer.valueOf(bookId));
 
         for( Loan loan : loans) {
             if(loan.getCloseDate() == null) {
-                return new ResponseEntity(HttpStatus.CONFLICT);
+                User borrower = loan.getBorrower();
+                return new ResponseEntity(borrower, HttpStatus.CONFLICT);
             }
 
         }

@@ -18,8 +18,19 @@ public class Book {
     @Size(min = 5, max = 25, message = "Le nom du livre doit faire entre 5 et 25 carcatères")
     private String name;
 
-    @Size(min = 5, max = 25, message = "La catégorie du livre doit faire entre 5 et 25 carcatères")
-    private String category;
+    @ManyToOne
+    private Category category;
+
+    @Transient
+    private int categoryId;
+
+    public int getCategoryId() {
+        return categoryId;
+    }
+
+    public void setCategoryId(int categoryId) {
+        this.categoryId = categoryId;
+    }
 
     private Boolean deleted;
 
@@ -37,11 +48,11 @@ public class Book {
     public Book() {
     }
 
-    public String getCategory() {
+    public Category getCategory() {
         return category;
     }
 
-    public void setCategory(String category) {
+    public void setCategory(Category category) {
         this.category = category;
     }
 

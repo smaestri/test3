@@ -4,13 +4,21 @@ import './Book.scss'
 import bookImg from './book.png'
 
 function Book(props) {
-  return (<div className="book-container">
+
+  const displayDate = (dateStr) => {
+    let newDate = new Date(dateStr);
+    return (newDate.toLocaleString("fr-FR"))
+  }
+
+  return (
     <div className="book">
-      <div><img src={bookImg} alt="Book" /></div>
+      <div className="book-image"><img src={bookImg} alt="Book" /></div>
       <div>Titre : {props.name}</div>
       <div>Catégorie : {props.category}</div>
+      {props.lender?<div>Prêteur : {props.lender}</div>:null}
+      {props.loanDate?<div>Demandé le: {displayDate(props.loanDate)}</div>:null}
+      {props.closeDate?<div>Clos le: {displayDate(props.closeDate)}</div>:null}
     </div>
-  </div>
   )
 }
 
