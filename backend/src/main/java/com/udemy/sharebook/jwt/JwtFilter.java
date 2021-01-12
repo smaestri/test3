@@ -29,34 +29,39 @@ public class JwtFilter extends OncePerRequestFilter {
     @Autowired
     private JwtUtils jwtTokenUtil;
 
+    private String getJwtTokenFromBearerOrCookies(Cookie[] cookies, String requestTokenHeader) {
+
+        if (requestTokenHeader != null && requestTokenHeader.startsWith("Bearer ")) {
+            return requestTokenHeader.substring(7);
+        }
+
+        for(Cookie cookie : cookies) {
+            if (cookie.getName().equals("token")){
+                return cookie.getValue();
+            }
+        }
+        return null;
+    }
+
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
             throws ServletException, IOException {
-        String jwtToken = null;
-        //final String requestTokenHeader = request.getHeader("Authorization");
+        final String requestTokenHeader = request.getHeader("Authorization");
 
         String requestURI = request.getRequestURI();
         Cookie[] cookies = request.getCookies();
-        // do not retreive token if new user
-        if(requestURI.equals("/users") || cookies == null || cookies.length == 0) {
+        // do not retreive token if new user or swagger
+        // if no cookies, no jwt to check, no permission
+        if(requestURI.equals("/users") || requestURI.contains("swagger")  || cookies == null || cookies.length == 0) {
             chain.doFilter(request, response);
             return;
         }
 
-
-        for(Cookie cookie : cookies) {
-            if (cookie.getName().equals("token")){
-                jwtToken= cookie.getValue();
-            }
-        }
-
         String username = null;
+        String jwtToken = getJwtTokenFromBearerOrCookies(cookies, requestTokenHeader);
 
-        // JWT Token is in the form "Bearer token". Remove Bearer word and get
-        // only the Token
-        //if (requestTokenHeader != null && requestTokenHeader.startsWith("Bearer ")) {
-          //  jwtToken = requestTokenHeader.substring(7);
-            try {
+        try {
                 username = jwtTokenUtil.getUsernameFromToken(jwtToken);
             } catch (IllegalArgumentException e) {
                 System.out.println("Unable to get JWT Token");

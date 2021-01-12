@@ -24,6 +24,8 @@ function AddBook(props) {
         axios.get('/categories/').then(response => {
             if (response && response.data) {
                 setCategories(response.data)
+                // Exercice : try to not put line below
+                setBookData({ name: '', categoryId: response.data[0].id})
             }
         }).then(()=> {
             if (props.params && props.params.bookId) {
@@ -43,10 +45,6 @@ function AddBook(props) {
         setBookData(obj)
     }
 
-    // const config = {
-    //     headers: { Authorization: `Bearer ${userInfo.token}` }
-    // };
-
     const onSubmit = (event) => {
         event.preventDefault();
         if (props.params && props.params.bookId) {
@@ -55,12 +53,16 @@ function AddBook(props) {
                 ...bookData,
             }/*, config*/).then(response => {
                 history.push("/myBooks");
+            }).catch(error => {
+                alert('Erreur détectée : ' + error.response.data)
             })
         } else {
-            axios.post(`/users/${userInfo.userId}/books`, {
+            axios.post(`/books`, {
                 ...bookData,
-            }/*, config*/).then(response => {
+            }/*, config*/).then(() => {
                 history.push("/myBooks");
+            }).catch(error => {
+                alert('Erreur détectée : ' + error.response.data)
             })
         }
     }

@@ -82,20 +82,20 @@ public class UserController {
 //        return 0;
 //    }
 
-    private static User getPrincipal() {
-
-        User user = null;
-        if (SecurityContextHolder.getContext().getAuthentication() == null) {
-            return null;
-        }
-
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
-        if (principal instanceof CustomUserDetailsService.UserPrincipal) {
-            user = ((CustomUserDetailsService.UserPrincipal) principal).getUser();
-
-        }
-        return user;
-    }
+//    private static User getPrincipal() {
+//
+//        User user = null;
+//        if (SecurityContextHolder.getContext().getAuthentication() == null) {
+//            return null;
+//        }
+//
+//        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+//
+//        if (principal instanceof CustomUserDetailsService.UserPrincipal) {
+//            user = ((CustomUserDetailsService.UserPrincipal) principal).getUser();
+//
+//        }
+//        return user;
+//    }
 
 }

@@ -1,4 +1,4 @@
-package com.udemy.sharebook.loan;
+package com.udemy.sharebook.borrow;
 
 import com.udemy.sharebook.book.Book;
 import com.udemy.sharebook.user.User;
@@ -7,7 +7,7 @@ import javax.persistence.*;
 import java.util.Date;
 
 @Entity
-public class Loan {
+public class Borrow {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -13,7 +13,7 @@ public class Book {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    private String status;
+    private BookStatus status;
 
     @Size(min = 5, max = 25, message = "Le nom du livre doit faire entre 5 et 25 carcatères")
     private String name;
@@ -76,11 +76,11 @@ public class Book {
         this.id = id;
     }
 
-    public String getStatus() {
+    public BookStatus getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(BookStatus status) {
         this.status = status;
     }
 

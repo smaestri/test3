@@ -16,7 +16,7 @@ function Book(props) {
       <div>Titre : {props.name}</div>
       <div>Catégorie : {props.category}</div>
       {props.lender?<div>Prêteur : {props.lender}</div>:null}
-      {props.loanDate?<div>Demandé le: {displayDate(props.loanDate)}</div>:null}
+      {props.askDate?<div>Demandé le: {displayDate(props.askDate)}</div>:null}
       {props.closeDate?<div>Clos le: {displayDate(props.closeDate)}</div>:null}
     </div>
   )

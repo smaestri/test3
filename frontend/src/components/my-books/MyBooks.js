@@ -38,7 +38,7 @@ const MyBooks = () => {
   }
 
   const fetchMyBooks = () => {
-    axios.get('/users/' + userInfo.userId + '/books/'/*, config*/).then(response => {
+    axios.get('/books/'/*, config*/).then(response => {
       if (response && response.data) {
         setMyBooks(response.data);
       }

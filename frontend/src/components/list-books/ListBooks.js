@@ -13,29 +13,20 @@ export default class ListBooks extends React.Component {
     this.state = { listBooks: [] }
   }
 
-
   componentDidMount() {
     //call APi to get books available (not those from user!)
     if (!this.context || !this.context.userInfo || !this.context.userInfo.userId) {
       return;
     }
-
-    // const config = {
-    //   headers: { Authorization: `Bearer ${this.context.userInfo.token}` }
-    // };
-
-    axios.get('/users/' + this.context.userInfo.userId + '/books/status/FREE'/*, config*/).then(response => {
+    axios.get('/books?status=FREE').then(response => {
       if (response && response.data) {
         this.setState({ listBooks: response.data })
       }
     })
   }
 
-  doLoan(bookId) {
-    // const config = {
-    //   headers: { Authorization: `Bearer ${this.context.userInfo.token}` }
-    // };
-    axios.post(`/users/${this.context.userInfo.userId}/loans/${bookId}`, {}/*, config*/).then(response => {
+  makeBorrow(bookId) {
+    axios.post(`/borrows/${bookId}`, {}/*, config*/).then(() => {
       this.props.history.push("/myBorrows")
     })
   }
@@ -48,14 +39,14 @@ export default class ListBooks extends React.Component {
         <div className="list-container">
           {this.state.listBooks.map(book => {
             return (
-              <div className="list-book-container">
+              <div className="book-container">
                 <Book
                   name={book.name}
                   category={book.category.label}
                   lender={book.user.firstName + " " + book.user.lastName}>
                 </Book>
                 <div className="text-center">
-                  <button className="btn btn-primary btn-sm" onClick={() => this.doLoan(book.id)}>Emprunter</button>
+                  <button className="btn btn-primary btn-sm" onClick={() => this.makeBorrow(book.id)}>Emprunter</button>
                 </div>
               </div>
             )
@@ -64,7 +55,6 @@ export default class ListBooks extends React.Component {
       </div>
     );
   }
-
 }
 
 ListBooks.contextType = UserContext;

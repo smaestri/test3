@@ -1,22 +1,14 @@
 import React from 'react'
 import axios from 'axios'
-import {Link} from 'react-router-dom'
-import UserContext from '../../context/UserContext'
 import Book from '../book/Book';
 import './MyBorrows.scss'
 
 function MyBorrows(props) {
 
-  const { userInfo } = React.useContext(UserContext);
   const [ myBorrows, setMyBorrows ] =React.useState([]);
 
-  // const config = {
-  //   headers: { Authorization: `Bearer ${userInfo.token}` }
-  // };
-
-
-  const fetchMyLoans = () => {
-    axios.get('/users/' + userInfo.userId + '/loans/'/*, config*/ ).then(response => {
+  const fetchBorrows = () => {
+    axios.get('/borrows'/*, config*/ ).then(response => {
       if (response && response.data) {
         setMyBorrows(response.data);
       }
@@ -24,15 +16,12 @@ function MyBorrows(props) {
   }
 
   React.useEffect(() => {
-    fetchMyLoans();
+    fetchBorrows();
   },[]);
 
-  const closeLoan = (idLoan) => {
-  //   const config = {
-  //     headers: { Authorization: `Bearer ${userInfo.token}` }
-  // };
-    axios.delete(`/loans/${idLoan}`/*, config*/).then(response => {
-      fetchMyLoans();
+  const closeBorrow = (borrowId) => {
+    axios.delete(`/borrows/${borrowId}`/*, config*/).then(response => {
+      fetchBorrows();
     })
   }
   
@@ -47,11 +36,11 @@ function MyBorrows(props) {
               name={borrow.book.name}
               category={borrow.book.category.label}
               lender={borrow.lender.firstName +" " + borrow.lender.lastName}
-              loanDate={borrow.askDate}
+              askDate={borrow.askDate}
               closeDate={borrow.closeDate}>
             </Book>
             <div className="text-center">
-              {borrow.closeDate?"":<button className="btn btn-primary btn-sm" onClick={() => closeLoan(borrow.id)}>Clore</button>}
+              {borrow.closeDate?"":<button className="btn btn-primary btn-sm" onClick={() => closeBorrow(borrow.id)}>Clore</button>}
             </div>
           </div>
           )
