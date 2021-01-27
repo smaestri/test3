@@ -3,8 +3,8 @@ package com.udemy.sharebook.book;
 import com.udemy.sharebook.user.User;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
-
 
 @Entity
 public class Book {
@@ -16,6 +16,7 @@ public class Book {
     private BookStatus status;
 
     @Size(min = 5, max = 25, message = "Le nom du livre doit faire entre 5 et 25 carcatères")
+    @NotEmpty
     private String name;
 
     @ManyToOne

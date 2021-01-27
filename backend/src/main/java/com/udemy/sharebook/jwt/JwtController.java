@@ -17,7 +17,8 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 
 @RestController
-@CrossOrigin
+//@CrossOrigin
+// TODO
 public class JwtController {
 
     @Autowired

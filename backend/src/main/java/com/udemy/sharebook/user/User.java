@@ -16,6 +16,13 @@ public class User {
     @Size(min = 2, max = 25, message = "Le prenom doit faire entre 5 et 25 carcatères")
     private String firstName;
 
+    @Size(min = 2, max = 25, message = "L'email de l'utilisateur doit faire entre 5 et 50 carcatères")
+    private String email;
+
+    @Transient
+    private String token;
+
+
     public String getToken() {
         return token;
     }
@@ -24,7 +31,6 @@ public class User {
         this.token = token;
     }
 
-    //    @Size(min = 2, max = 25, message = "Le mot de passe doit faire entre 5 et 25 carcatères")
     private String password;
 
     public String getEmail() {
@@ -35,11 +41,6 @@ public class User {
         this.email = email;
     }
 
-    @Size(min = 2, max = 25, message = "L'email de l'utilisateur doit faire entre 5 et 50 carcatères")
-    private String email;
-
-    @Transient
-    private String token;
 
     public String getLastName() {
         return lastName;

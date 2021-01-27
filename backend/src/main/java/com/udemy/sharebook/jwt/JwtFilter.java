@@ -29,26 +29,10 @@ public class JwtFilter extends OncePerRequestFilter {
     @Autowired
     private JwtUtils jwtTokenUtil;
 
-    private String getJwtTokenFromBearerOrCookies(Cookie[] cookies, String requestTokenHeader) {
-
-        if (requestTokenHeader != null && requestTokenHeader.startsWith("Bearer ")) {
-            return requestTokenHeader.substring(7);
-        }
-
-        for(Cookie cookie : cookies) {
-            if (cookie.getName().equals("token")){
-                return cookie.getValue();
-            }
-        }
-        return null;
-    }
-
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
             throws ServletException, IOException {
-        final String requestTokenHeader = request.getHeader("Authorization");
-
         String requestURI = request.getRequestURI();
         Cookie[] cookies = request.getCookies();
         // do not retreive token if new user or swagger
@@ -59,7 +43,7 @@ public class JwtFilter extends OncePerRequestFilter {
         }
 
         String username = null;
-        String jwtToken = getJwtTokenFromBearerOrCookies(cookies, requestTokenHeader);
+        String jwtToken = getJwtTokenFromBearerOrCookies(cookies,  request.getHeader("Authorization"));
 
         try {
                 username = jwtTokenUtil.getUsernameFromToken(jwtToken);
@@ -74,11 +58,12 @@ public class JwtFilter extends OncePerRequestFilter {
 
         // Once we get the token validate it.
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-
+            // 3
             UserDetails userDetails = this.jwtUserDetailsService.loadUserByUsername(username);
 
             // if token is valid configure Spring Security to manually set
             // authentication
+            //4
             if (jwtTokenUtil.validateToken(jwtToken, userDetails)) {
 
                 UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
@@ -88,9 +73,24 @@ public class JwtFilter extends OncePerRequestFilter {
                 // After setting the Authentication in the context, we specify
                 // that the current user is authenticated. So it passes the
                 // Spring Security Configurations successfully.
+                // 5 enregistrer
                 SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
             }
         }
         chain.doFilter(request, response);
+    }
+
+    private String getJwtTokenFromBearerOrCookies(Cookie[] cookies, String requestTokenHeader) {
+
+        if (requestTokenHeader != null && requestTokenHeader.startsWith("Bearer ")) {
+            return requestTokenHeader.substring(7);
+        }
+
+        for(Cookie cookie : cookies) {
+            if (cookie.getName().equals("token")){
+                return cookie.getValue();
+            }
+        }
+        return null;
     }
 }

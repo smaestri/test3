@@ -1,6 +1,6 @@
 package com.udemy.sharebook.book;
 
-import com.udemy.sharebook.configuration.CustomUserDetailsService;
+//import com.udemy.sharebook.configuration.CustomUserDetailsService;
 import com.udemy.sharebook.borrow.Borrow;
 import com.udemy.sharebook.borrow.BorrowRepository;
 import com.udemy.sharebook.user.User;
@@ -32,22 +32,23 @@ public class BookController {
     @Autowired
     BorrowRepository borrowRepository;
 
-    public static Integer getUserIdFromPrincipal(Principal principal) {
+    public static Integer getUserConnectedId(Principal principal) {
 
-        if (!(principal instanceof UsernamePasswordAuthenticationToken)) {
-            throw new RuntimeException(("User not found"));
-        }
-        UsernamePasswordAuthenticationToken token = (UsernamePasswordAuthenticationToken) principal;
-        Integer userId = ((CustomUserDetailsService.UserPrincipal)token.getPrincipal()).getUser().getId();
+//        if (!(principal instanceof UsernamePasswordAuthenticationToken)) {
+//            throw new RuntimeException(("User not found"));
+//        }
+//        UsernamePasswordAuthenticationToken token = (UsernamePasswordAuthenticationToken) principal;
+//        Integer userId = ((CustomUserDetailsService.UserPrincipal)token.getPrincipal()).getUser().getId();
 
-        return userId;
+        //return userId;
+        return 1;
     }
 
     // afficher les livres disponibles / mybooks
     @GetMapping(value = "/books")
     public ResponseEntity freeBooks(Principal principal, @RequestParam(required = false) BookStatus status) {
 
-        Integer userId = this.getUserIdFromPrincipal(principal);
+        Integer userId = this.getUserConnectedId(principal);
 
         List<Book> listBook;
         if(StringUtils.isEmpty(status)) {
@@ -77,15 +78,15 @@ public class BookController {
     }
 
     // update book
-    @PutMapping(value = "/books/{bookId}")
-    public ResponseEntity updateBook(@PathVariable("bookId") String bookId, @Valid @RequestBody Book book, Principal principal) {
+    @PutMapping(value = "/books")
+    public ResponseEntity updateBook(@Valid @RequestBody Book book, Principal principal) {
 
-        Optional<Book> bookToUpdate = bookRepository.findById(Integer.parseInt(bookId));
+        Optional<Book> bookToUpdate = bookRepository.findById(book.getId());
         Optional<Category> cat = this.categoryRepository.findById(book.getCategoryId());
 
         // check that the book belongs to user connected
-        Integer userId = this.getUserIdFromPrincipal(principal);
-        if(bookToUpdate.isPresent() && bookToUpdate.get().getId() != userId) {
+        Integer userId = this.getUserConnectedId(principal);
+        if(bookToUpdate.isPresent() && bookToUpdate.get().getUser().getId() != userId) {
             return new ResponseEntity(HttpStatus.FORBIDDEN);
         }
         if (bookToUpdate.isPresent()) {
@@ -108,7 +109,7 @@ public class BookController {
     @ResponseStatus(value = HttpStatus.CREATED)
     public ResponseEntity createBookFoorUser( @Valid @RequestBody Book book, Principal principal) {
 
-        Integer userId = this.getUserIdFromPrincipal(principal);
+        Integer userId = this.getUserConnectedId(principal);
         Optional<User> user = userRepository.findById(Integer.valueOf(userId));
         Optional<Category> cat = this.categoryRepository.findById(book.getCategoryId());
         // check that the book belongs to user connected
@@ -130,9 +131,9 @@ public class BookController {
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public ResponseEntity deleteBook(@PathVariable("bookId") String bookId, Principal principal) {
 
-        Integer userId = this.getUserIdFromPrincipal(principal);
+        Integer userId = this.getUserConnectedId(principal);
         Book bookToDelete = this.bookRepository.findById(Integer.valueOf(bookId)).get();
-        if(bookToDelete != null && bookToDelete.getId() != userId) {
+        if(bookToDelete != null && bookToDelete.getUser().getId() != userId) {
             return new ResponseEntity(HttpStatus.FORBIDDEN);
         }
         List<Borrow> borrows = this.borrowRepository.findByBookId(Integer.valueOf(bookId));

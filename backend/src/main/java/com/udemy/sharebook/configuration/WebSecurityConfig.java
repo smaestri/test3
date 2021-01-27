@@ -26,17 +26,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private CustomUserDetailsService userService;
 
-//    @Autowired
-//    private CustomAccessDeniedHandler accessDeniedHandler;
-
     @Autowired
     private RestAuthenticationEntryPoint restAuthenticationEntryPoint;
 
 //    @Autowired
-//    private MySavedRequestAwareAuthenticationSuccessHandler mySuccessHandler;
-
-    @Autowired
-    private JwtFilter jwtRequestFilter;
+//    private JwtFilter jwtRequestFilter;
 
     private SimpleUrlAuthenticationFailureHandler myFailureHandler = new SimpleUrlAuthenticationFailureHandler();
 
@@ -44,7 +38,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
 
-        http.headers().frameOptions().disable().and()
+        http
                 .csrf().disable()
                 .exceptionHandling()
                 .authenticationEntryPoint(restAuthenticationEntryPoint)
@@ -55,7 +49,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers("/favicon.ico").permitAll()
                 .antMatchers("/users").permitAll()
-                .antMatchers("/h2-console/**").permitAll()
                 .antMatchers("/app/**").permitAll()
                 .antMatchers("/authenticate").permitAll()
                 .antMatchers("/v2/api-docs").permitAll()
@@ -65,7 +58,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .anyRequest().authenticated()
                 .and()
                 .formLogin()
-               // .successHandler(mySuccessHandler)
+                // .successHandler(mySuccessHandler)
                 .failureHandler(myFailureHandler)
                 .and()
                 .logout()
@@ -79,7 +72,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     }
         });
 
-        http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
+       // http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
 
     }
 
