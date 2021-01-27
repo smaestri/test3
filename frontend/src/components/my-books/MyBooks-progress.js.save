@@ -1,0 +1,48 @@
+import React, { useState } from 'react'
+import axios from 'axios'
+import { Link } from 'react-router-dom'
+import DeleteBookModal from '../modal/DeleteBookModal'
+import SimpleModal from '../modal/SimpleModal'
+
+import Book from '../book/Book';
+
+import './MyBooks.scss'
+
+
+export default class ListBooks extends React.Component {
+
+
+
+  constructor(props) {
+    super();
+     this.state = { name: "toto", category: "1"}
+    this.name = "toto";
+    this.category = "1"
+
+  }
+
+componentDidMount() {
+  setTimeout(() => {
+    this.setState({name: "tata", category: "2"})
+    // this.name = "tata";
+    // this.category ="2";
+    console.log("timeout")
+
+  }, 500)
+}
+
+  render() {
+
+    console.log('render')
+    
+
+    return (
+      <><Link to="/addBook">Add</Link>
+      <Book
+        name={this.state.name}
+        category={this.state.category}>
+      </Book>
+      </>)
+  }
+
+}

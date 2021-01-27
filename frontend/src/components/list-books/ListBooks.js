@@ -2,8 +2,6 @@ import React from 'react'
 import axios from 'axios'
 import Book from '../book/Book';
 
-import UserContext from '../../context/UserContext'
-
 import './ListBooks.scss'
 
 export default class ListBooks extends React.Component {
@@ -14,10 +12,7 @@ export default class ListBooks extends React.Component {
   }
 
   componentDidMount() {
-    //call APi to get books available (not those from user!)
-    if (!this.context || !this.context.userInfo || !this.context.userInfo.userId) {
-      return;
-    }
+
     axios.get('/books?status=FREE').then(response => {
       if (response && response.data) {
         this.setState({ listBooks: response.data })
@@ -39,7 +34,7 @@ export default class ListBooks extends React.Component {
         <div className="list-container">
           {this.state.listBooks.map(book => {
             return (
-              <div className="book-container">
+              <div className="book-container" key={book.id}>
                 <Book
                   name={book.name}
                   category={book.category.label}
@@ -56,5 +51,3 @@ export default class ListBooks extends React.Component {
     );
   }
 }
-
-ListBooks.contextType = UserContext;

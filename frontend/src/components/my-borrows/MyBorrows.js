@@ -31,7 +31,7 @@ function MyBorrows(props) {
     <div className="list-container">
         {myBorrows.map(borrow => {
           return (
-          <div className="borrow-container">
+          <div className="borrow-container" key={borrow.id}>
             <Book 
               name={borrow.book.name}
               category={borrow.book.category.label}

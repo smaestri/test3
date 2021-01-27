@@ -24,7 +24,6 @@ export default function App() {
     const handleCloseModal = () => setShowModal(false);
 
     function PrivateRoute({ children, ...rest }) {
-
         return (
             <Route {...rest} exact render={(routeProps) => {
                 const elt = React.cloneElement(children, { params: routeProps.match.params, history: routeProps.history })
@@ -37,7 +36,6 @@ export default function App() {
             }} />
         )
     }
-
 
     React.useEffect(() => {
         axios.get('/refreshConnection').then(response => {
@@ -54,11 +52,10 @@ export default function App() {
             password: password
         }).then(response => {
             if (response && response.data) {
-                console.log(JSON.stringify(response.data))
                 setUserInfo({userId: response.data.userId, userName: response.data.userName} )
                 
             }
-        }).catch(error => {
+        }).catch(() => {
             setShowModal(true);
         })
     }
@@ -72,11 +69,7 @@ export default function App() {
         setUserInfo({userId, userName})
     }
 
-
-    console.log('userInfo')
-    console.log(JSON.stringify(userInfo))
-
-    const isConnected = (userInfo /*&& userInfo.token*/ && userInfo.userId?true:false);
+    const isConnected = (userInfo && userInfo.userId?true:false);
 
     return <Router>
           <div className="container">
@@ -102,7 +95,7 @@ export default function App() {
                     <AddUser />
                 </Route>
                 <Route path="/login">
-                    <Login authenticate={authenticate} isConnected={isConnected} />
+                    <Login authenticate={authenticate} />
                 </Route>
             
                 <Home isConnected={isConnected} />

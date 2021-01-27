@@ -1,19 +1,16 @@
-import React, { useContext } from 'react'
+import React from 'react'
 import axios from 'axios'
 import { useHistory, Link } from "react-router-dom";
-
-import UserContext from '../../context/UserContext'
 
 import './AddBook.scss'
 
 function AddBook(props) {
     const history = useHistory();
-    const { userInfo } = useContext(UserContext);
-    const [bookData, setBookData] = React.useState({})
+    const [bookData, setBookData] = React.useState({name: '', categoryId: 0})
     const [categories, setCategories] = React.useState({})
 
     const fetchBook = (idBook) => {
-        axios.get(`/books/${idBook}`/*, config*/).then(response => {
+        axios.get(`/books/${idBook}`).then(response => {
             if (response && response.data) {
                 setBookData({ name: response.data.name, categoryId: response.data.category.id })
             }
@@ -49,9 +46,9 @@ function AddBook(props) {
         event.preventDefault();
         if (props.params && props.params.bookId) {
             //use PUT, not POST
-            axios.put(`/books/${props.params.bookId}`, {
-                ...bookData,
-            }/*, config*/).then(response => {
+            axios.put(`/books`, {
+                ...bookData, id: props.params.bookId,
+            }).then(response => {
                 history.push("/myBooks");
             }).catch(error => {
                 alert('Erreur détectée : ' + error.response.data)
@@ -59,10 +56,10 @@ function AddBook(props) {
         } else {
             axios.post(`/books`, {
                 ...bookData,
-            }/*, config*/).then(() => {
+            }).then(() => {
                 history.push("/myBooks");
             }).catch(error => {
-                alert('Erreur détectée : ' + error.response.data)
+                alert('Erreur détectée : ' + error.response.data.errors[0].defaultMessage)
             })
         }
     }
@@ -79,7 +76,7 @@ function AddBook(props) {
                     <label>catégorie du livre</label>
                     {categories.length > 0  ? (<select name="categoryId" className="form-control" value={bookData.categoryId} onChange={handleInputChange}>
                         {categories.map(category => (
-                            <option value={category.id}>{category.label}</option>
+                            <option value={category.id} key={category.id} >{category.label}</option>
                         ))}
                     </select>):null}
                 </div>

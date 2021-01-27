@@ -5,18 +5,17 @@ import DeleteBookModal from '../modal/DeleteBookModal'
 import SimpleModal from '../modal/SimpleModal'
 
 import Book from '../book/Book';
-import UserContext from '../../context/UserContext'
 
 import './MyBooks.scss'
 
 
 const MyBooks = () => {
 
-  const { userInfo } = React.useContext(UserContext);
   const [myBooks, setMyBooks] = React.useState([]);
   const [showModalDelete, setShowModalDelete] = useState(false);
   const [showForbiddenModal, setShowForbiddenModal] = useState(false);
   const [bookToDelete, setBookToDelete] = useState({});
+  
   const handleCloseModal = () => setShowModalDelete(false);
   const handleShowModal = (book) => {
     setShowModalDelete(true);
@@ -38,7 +37,7 @@ const MyBooks = () => {
   }
 
   const fetchMyBooks = () => {
-    axios.get('/books/'/*, config*/).then(response => {
+    axios.get('/books/').then(response => {
       if (response && response.data) {
         setMyBooks(response.data);
       }
@@ -56,7 +55,7 @@ const MyBooks = () => {
       {myBooks.length === 0 ? <div>Vous n'avez pas déclaré de livres.</div> : null}
       <div className="list-container">
         {myBooks.map(book => {
-          return (<div className="mybook-container">
+          return (<div className="mybook-container" key={book.id}>
             <Book name={book.name} category={book.category.label}></Book>
             <div className="container-buttons text-center" >
               <Link to={`/addBook/${book.id}`}>
